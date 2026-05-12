@@ -71,8 +71,7 @@ def create_model(optimizer='RMSprop', learn_rate=0.1, momentum=0.4, activation='
 
 def get_ecfc(smiles_list, radius=2, nBits=2048, useCounts=True):
     """
-    Calculates the ECFP fingerprint for given SMILES list
-    
+    Calculates the ECFP fingerprint for given SMILES list. ECFP -> Extended Connectivity Fingerprint is a way of converting a molecule into a numerical vector that a machine learning model can understand.
     :param smiles_list: List of SMILES
     :type smiles_list: list
     :param radius: The ECPF fingerprints radius.
