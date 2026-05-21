@@ -6,7 +6,8 @@ from rdkit.Chem import AllChem, rdFingerprintGenerator
 
 import pandas as pd
 
-from electrolyte_db.db import * 
+from electrolyte_db.connection import * 
+from electrolyte_db.query import * 
 
 
 # connect to mp_materials database 
@@ -104,3 +105,4 @@ results_df.to_csv("sorted_reaction_energy_predictions.csv", index=False)
 
 print(results_df.head())
 print("\nCSV saved as sorted_reaction_energy_predictions.csv")
+
