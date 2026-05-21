@@ -13,21 +13,18 @@ from electrolyte_db.db import *
 connection = get_connection()
 cursor = connection.cursor()
 
-records = query_molecule(table="pubchem_molecules", result_cols=["iupac_name", "smiles"])
+records = query_molecule(table="pubchem_molecules", result_cols=["iupac_name", "n_atoms", "molecular_formula", "smiles"])
 
 
-# separating the data
-iupac_names = []
-smiles_list = []
+# retrieving only the records with a valid SMILES. Returns a list of dict where each dict corresponds to a row in the pubchem_molecules database table. The keys are the column names and values are entries associated with that particular column 
+valid_records = []
 
 for r in records:
-    iupac_name = r['iupac_name']
     smiles = r['smiles']
 
     # skipping null/empty SMILES
     if smiles:
-        iupac_names.append(iupac_name)
-        smiles_list.append(smiles)
+        valid_records.append(r)
 
 
 # fingerprint generation
@@ -74,13 +71,9 @@ def get_ecfc(smiles_list, radius=2, nBits=2048):
     return df_fp, valid_indices
 
 
-# generating fingerprints
+# generating fingerprints for all smiles molecules 
+smiles_list = [d['smiles'] for d in valid_records]
 ecfc_encoder, valid_indices = get_ecfc(smiles_list)
-
-
-# keeping only valid molecules
-valid_iupac = [iupac_names[i] for i in valid_indices]
-valid_smiles = [smiles_list[i] for i in valid_indices]
 
 
 # loading ML model
@@ -88,14 +81,21 @@ rf_final_model = pickle.load(
     open('./final_models/rf_final_model.txt', "rb")
 )
 
-# predicting reaction energies
+
+# predicting reaction energies and storing them in valid_record (list of rows in database)
 pred_rf = enumerate(rf_final_model.predict(ecfc_encoder))
 pred_rf = sorted(pred_rf, key=lambda x: x[1])
 
+for i in pred_rf:
+    valid_records[i[0]]["reduction_potential"] = i[1] 
+
+
 # final data frame
 results_df = pd.DataFrame({
-    "iupac_name": [valid_iupac[i] for i, _ in pred_rf],
-    "smiles": [valid_smiles[i] for i, _ in pred_rf],
+    "iupac_name": [valid_records[i]['iupac_name'] for i, _ in pred_rf],
+    "n_atoms": [valid_records[i]['n_atoms'] for i, _ in pred_rf],
+    "molecular_formula": [valid_records[i]['molecular_formula'] for i, _ in pred_rf],
+    "smiles": [smiles_list[i] for i, _ in pred_rf],
     "reaction_energy": [x[1] for x in pred_rf]
 })
 
