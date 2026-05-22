@@ -1,4 +1,5 @@
-from electrolyte_db.db import * 
+from electrolyte_db.connection import * 
+from electrolyte_db.query import * 
 from rdkit import Chem 
 
 # connect to mp_materials database 

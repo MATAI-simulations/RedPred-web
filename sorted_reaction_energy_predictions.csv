@@ -1,4 +1,4 @@
-iupac_name,n_atoms,molecular_formula,smiles,reaction_energy
+iupac_name,n_atoms,molecular_formula,smiles,reaction_energy (Hartree)
 "(5,8-dioxonaphthalen-1-yl) (Z)-octadec-9-enoate",70,C28H38O4,CCCCCCCC/C=C\CCCCCCCC(=O)OC1=CC=CC2=C1C(=O)C=CC2=O,-0.0658367166666667
 "1,3-diphenylindazole-4,7-dione",35,C19H12N2O2,C1=CC=C(C=C1)C2=NN(C3=C2C(=O)C=CC3=O)C4=CC=CC=C4,-0.06360619976190479
 "(E)-4-(dimethylamino)-N-[4-[[3,6-dioxo-4-(thiophen-2-ylmethoxy)cyclohexa-1,4-dien-1-yl]amino]-7-ethoxyquinazolin-6-yl]but-2-enamide",65,C27H27N5O5S,CCOC1=C(C=C2C(=C1)N=CN=C2NC3=CC(=O)C(=CC3=O)OCC4=CC=CS4)NC(=O)/C=C/CN(C)C,-0.06136805833333333

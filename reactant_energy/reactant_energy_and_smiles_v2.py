@@ -77,18 +77,20 @@ smiles_list = [d['smiles'] for d in valid_records]
 ecfc_encoder, valid_indices = get_ecfc(smiles_list)
 
 
-# loading ML model
+# loading the RandomForest ML model 
 rf_final_model = pickle.load(
     open('./final_models/rf_final_model.txt', "rb")
 )
 
 
-# predicting reaction energies and storing them in valid_record (list of rows in database)
+# predicting reaction energies and storing them in valid_record (list of rows in database). 
+# The model takes the SMILES representation of reactant molecules of the redox reaction as an input and predicts the redox reaction (in Hartree)
+# The reaction is Q + 2H+ + 2e- -> QH2 where Q is a quinone molecule. The carbonyls become reduced to hydroxyls 
 pred_rf = enumerate(rf_final_model.predict(ecfc_encoder))
 pred_rf = sorted(pred_rf, key=lambda x: x[1])
 
 for i in pred_rf:
-    valid_records[i[0]]["reduction_potential"] = i[1] 
+    valid_records[i[0]]["reduction_potential (Hartree)"] = i[1] 
 
 
 # final data frame
@@ -97,7 +99,7 @@ results_df = pd.DataFrame({
     "n_atoms": [valid_records[i]['n_atoms'] for i, _ in pred_rf],
     "molecular_formula": [valid_records[i]['molecular_formula'] for i, _ in pred_rf],
     "smiles": [smiles_list[i] for i, _ in pred_rf],
-    "reaction_energy": [x[1] for x in pred_rf]
+    "reaction_energy (Hartree)": [x[1] for x in pred_rf]
 })
 
 # saving as a csv
